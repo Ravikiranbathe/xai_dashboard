@@ -86,6 +86,9 @@ def plot_feature_importance(
     top_n = min(20, len(feature_names), len(mean_abs))
     sorted_idx = np.argsort(mean_abs)[::-1][:top_n]
     
+    # Filter sorted_idx to only include valid indices
+    sorted_idx = sorted_idx[sorted_idx < len(feature_names)]
+    
     # Extract values for plotting
     values = mean_abs[sorted_idx]
     
@@ -93,7 +96,7 @@ def plot_feature_importance(
     if hasattr(values, 'flatten'):
         values = values.flatten()
     
-    fig, ax = plt.subplots(figsize=(8, max(4, top_n * 0.38)))
+    fig, ax = plt.subplots(figsize=(8, max(4, len(values) * 0.38)))
     colors = [ACCENT if i == 0 else "#a78bfa" for i in range(len(values))]
     ax.barh(np.arange(len(values)), values, color=colors, alpha=0.85)
     ax.set_yticks(np.arange(len(values)))
@@ -143,6 +146,9 @@ def plot_shap_waterfall(
     top_n = min(15, len(feature_names), len(sv))
     sorted_idx = np.argsort(np.abs(sv))[::-1][:top_n]
     
+    # Filter sorted_idx to only include valid indices
+    sorted_idx = sorted_idx[sorted_idx < len(feature_names)]
+    
     # Extract values for plotting
     values = sv[sorted_idx]
     if hasattr(values, 'flatten'):
@@ -179,8 +185,16 @@ def generate_plain_language_explanation(
 ) -> str:
     """Return a human-readable explanation for a single prediction."""
     sv = shap_values[sample_idx]
-    top_n = min(5, len(feature_names))
+    
+    # Ensure sv is 1D
+    if sv.ndim > 1:
+        sv = sv.flatten()
+    
+    top_n = min(5, len(feature_names), len(sv))
     sorted_idx = np.argsort(np.abs(sv))[::-1][:top_n]
+    
+    # Filter sorted_idx to only include valid indices
+    sorted_idx = sorted_idx[sorted_idx < len(feature_names)]
 
     pos_feats = [feature_names[i] for i in sorted_idx if sv[i] > 0]
     neg_feats = [feature_names[i] for i in sorted_idx if sv[i] < 0]
