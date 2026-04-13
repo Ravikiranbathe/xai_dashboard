@@ -2,6 +2,10 @@
 
 > An end-to-end Machine Learning dashboard with built-in explainability powered by SHAP — built for transparency, trust, and production quality.
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ---
 
 ## 📸 Screenshots
@@ -90,11 +94,16 @@ xai_dashboard/
 │   ├── train_model.py        # Train, evaluate, plot metrics
 │   └── explain_model.py      # SHAP global & local explanations
 │
+├── .streamlit/
+│   └── config.toml           # Streamlit theme configuration
+│
 ├── models/                   # Auto-created; stores .joblib artefacts
 ├── data/                     # Place sample datasets here (e.g. iris.csv)
 │
-├── requirements.txt
-└── README.md
+├── .gitignore                # Git ignore rules
+├── runtime.txt               # Python version for deployment
+├── requirements.txt          # Python dependencies
+└── README.md                 # This file
 ```
 
 ---
@@ -103,8 +112,8 @@ xai_dashboard/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/xai-dashboard.git
-cd xai-dashboard/xai_dashboard
+git clone https://github.com/Ravikiranbathe/xai_dashboard.git
+cd xai_dashboard/xai_dashboard
 ```
 
 ### 2. Create a virtual environment (recommended)
@@ -138,12 +147,29 @@ Open your browser at **http://localhost:8501**
 
 ---
 
-## ☁️ Deployment (Streamlit Cloud)
+## ☁️ Deployment
 
-1. Push this repo to GitHub
+### Streamlit Cloud (Recommended - FREE)
+
+This project is configured for easy deployment on Streamlit Cloud:
+
+1. Push this repo to GitHub (already done!)
 2. Go to [share.streamlit.io](https://share.streamlit.io) → **New App**
-3. Set **Main file path** to `xai_dashboard/app.py`
-4. Click **Deploy**
+3. Connect your GitHub account and select `Ravikiranbathe/xai_dashboard`
+4. Set **Main file path** to `xai_dashboard/app.py`
+5. Click **Deploy**
+
+Your app will be live at `https://your-app-name.streamlit.app` in minutes!
+
+**Deployment files included:**
+- `.streamlit/config.toml` - Custom theme configuration
+- `runtime.txt` - Python version specification
+- `.gitignore` - Excludes unnecessary files
+- `requirements.txt` - All dependencies
+
+### Other Platforms
+
+For detailed deployment instructions on Railway, Render, Heroku, and more, see **[DEPLOYMENT.md](../DEPLOYMENT.md)** in the root directory.
 
 > **Note**: The `models/` folder is ephemeral on Streamlit Cloud. For persistent storage, integrate with AWS S3 or Google Cloud Storage using `boto3` or `google-cloud-storage`.
 
@@ -158,6 +184,23 @@ Open your browser at **http://localhost:8501**
 - [ ] REST API endpoint via FastAPI
 - [ ] Docker containerisation
 - [ ] MLflow experiment tracking integration
+- [ ] Persistent model storage (S3/GCS integration)
+- [ ] User authentication and multi-tenancy
+- [ ] Custom model upload support
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+## 📧 Contact
+
+**Ravikiran Bathe**
+- GitHub: [@Ravikiranbathe](https://github.com/Ravikiranbathe)
+- Repository: [xai_dashboard](https://github.com/Ravikiranbathe/xai_dashboard)
 
 ---
 
