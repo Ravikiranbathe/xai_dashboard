@@ -55,6 +55,16 @@ def compute_shap_values(model, X_sample: np.ndarray, model_name: str):
         else:
             shap_values = shap_out
 
+        # Ensure 2D shape
+        if shap_values.ndim == 1:
+            shap_values = shap_values.reshape(1, -1)
+        
+        # Ensure we have the same number of samples as input
+        if shap_values.shape[0] != X_sample.shape[0]:
+            # Truncate to minimum
+            min_samples = min(shap_values.shape[0], X_sample.shape[0])
+            shap_values = shap_values[:min_samples]
+
         return shap_values, explainer
 
     except Exception:
@@ -64,11 +74,20 @@ def compute_shap_values(model, X_sample: np.ndarray, model_name: str):
                       else model.predict)
         background = shap.sample(X_sample, min(50, len(X_sample)))
         explainer = shap.KernelExplainer(predict_fn, background)
-        shap_out = explainer.shap_values(X_sample[:50])
+        
+        # Limit samples for KernelExplainer (it's slow)
+        n_explain = min(50, len(X_sample))
+        shap_out = explainer.shap_values(X_sample[:n_explain])
+        
         if isinstance(shap_out, list):
             shap_values = shap_out[1] if len(shap_out) == 2 else shap_out[0]
         else:
             shap_values = shap_out
+        
+        # Ensure 2D shape
+        if shap_values.ndim == 1:
+            shap_values = shap_values.reshape(1, -1)
+            
         return shap_values, explainer
 
 
@@ -117,6 +136,19 @@ def plot_shap_summary(
     feature_names: List[str],
 ) -> plt.Figure:
     """SHAP beeswarm summary plot."""
+    # Ensure shapes match - truncate to minimum length
+    min_samples = min(shap_values.shape[0], X_sample.shape[0])
+    shap_values = shap_values[:min_samples]
+    X_sample = X_sample[:min_samples]
+    
+    # Ensure feature dimensions match
+    if shap_values.shape[1] != X_sample.shape[1]:
+        # Take minimum feature count
+        min_features = min(shap_values.shape[1], X_sample.shape[1])
+        shap_values = shap_values[:, :min_features]
+        X_sample = X_sample[:, :min_features]
+        feature_names = feature_names[:min_features]
+    
     plt.figure()
     shap.summary_plot(
         shap_values, X_sample,
